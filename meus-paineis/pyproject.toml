@@ -1,0 +1,10 @@
+[tool.poetry]
+name = "meus-paineis"
+version = "0.1.0"
+description = "Painéis Uai Data"
+authors = []
+package-mode = false
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+uai-data = ">=0.1"

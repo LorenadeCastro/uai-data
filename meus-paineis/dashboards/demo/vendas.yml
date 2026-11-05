@@ -1,0 +1,191 @@
+title: Vendas — visão geral
+organization: demo
+description: Painel de demonstração com as principais visualizações do Uai Data.
+database: demo
+tags: [demo]
+
+# Filtros do painel: valem para todos os cards que tiverem a coluna
+filters:
+  - {column: ano, label: Ano}
+  - {column: regiao, label: Região}
+  - {column: produto, label: Produto}
+
+cards:
+  - id: faturamento
+    title: Faturamento
+    viz: number
+    source: {table: vendas}
+    measures: [{column: valor, agg: sum, name: faturamento, format: currency}]
+    y: [faturamento]
+    width: 3
+    height: 200
+
+  - id: pedidos
+    title: Pedidos
+    viz: number
+    source: {table: vendas}
+    measures: [{agg: count, name: pedidos, format: integer}]
+    y: [pedidos]
+    width: 3
+    height: 200
+
+  - id: ticket
+    title: Ticket médio
+    viz: number
+    source: {table: vendas}
+    measures: [{column: valor, agg: avg, name: ticket, format: currency}]
+    y: [ticket]
+    width: 3
+    height: 200
+
+  - id: meta
+    title: Quantidade vendida × meta
+    viz: gauge
+    source: {table: vendas}
+    measures: [{column: quantidade, agg: sum, name: qtd, format: integer, label: Unidades}]
+    y: [qtd]
+    max_value: 8000
+    width: 3
+    height: 200
+
+  - id: evolucao
+    title: Evolução mensal
+    viz: line
+    source: {table: vendas}
+    dimensions: [mes]
+    measures: [{column: valor, agg: sum, name: faturamento, format: currency, label: Faturamento}]
+    x: mes
+    y: [faturamento]
+    width: 8
+
+  - id: produto-donut
+    title: Participação por produto
+    viz: donut
+    source: {table: vendas}
+    dimensions: [produto]
+    measures: [{column: valor, agg: sum, name: faturamento, format: currency, label: Faturamento}]
+    x: produto
+    y: [faturamento]
+    width: 4
+
+  - id: por-regiao
+    title: Faturamento por região
+    viz: bar
+    source: {table: vendas}
+    dimensions: [regiao]
+    measures: [{column: valor, agg: sum, name: faturamento, format: currency, label: Faturamento}]
+    x: regiao
+    y: [faturamento]
+    sort: [{by: faturamento, dir: desc}]
+    width: 4
+
+  - id: regiao-produto
+    title: Região × produto
+    viz: stacked_bar
+    source: {table: vendas}
+    dimensions: [regiao, produto]
+    measures: [{column: valor, agg: sum, name: faturamento, format: currency, label: Faturamento}]
+    x: regiao
+    series: produto
+    y: [faturamento]
+    width: 4
+
+  - id: top-vendedores
+    title: Top 10 vendedores
+    viz: hbar
+    source: {table: vendas}
+    dimensions: [vendedor]
+    measures: [{column: valor, agg: sum, name: faturamento, format: currency, label: Faturamento}]
+    x: vendedor
+    y: [faturamento]
+    sort: [{by: faturamento, dir: desc}]
+    top: 10
+    width: 4
+
+  - id: calor
+    title: Mapa de calor — mês × região
+    viz: heatmap
+    source: {table: vendas}
+    dimensions: [mes, regiao]
+    measures: [{column: valor, agg: sum, name: faturamento, format: currency, label: Faturamento}]
+    x: mes
+    series: regiao
+    y: [faturamento]
+    width: 8
+
+  - id: funil
+    title: Funil por produto
+    viz: funnel
+    source: {table: vendas}
+    dimensions: [produto]
+    measures: [{column: quantidade, agg: sum, name: qtd, format: integer, label: Unidades}]
+    x: produto
+    y: [qtd]
+    sort: [{by: qtd, dir: desc}]
+    width: 4
+
+  - id: arvore
+    title: Treemap — região › produto
+    viz: treemap
+    source: {table: vendas}
+    dimensions: [regiao, produto]
+    measures: [{column: valor, agg: sum, name: faturamento, format: currency, label: Faturamento}]
+    y: [faturamento]
+    width: 6
+
+  - id: cascata
+    title: Contribuição por região (cascata)
+    viz: waterfall
+    source: {table: vendas}
+    dimensions: [regiao]
+    measures: [{column: valor, agg: sum, name: faturamento, format: currency, label: Faturamento}]
+    x: regiao
+    y: [faturamento]
+    width: 6
+
+  - id: dispersao
+    title: Unidades × faturamento por vendedor
+    viz: scatter
+    source: {table: vendas}
+    dimensions: [vendedor]
+    measures:
+      - {column: quantidade, agg: sum, name: qtd, format: integer, label: Unidades}
+      - {column: valor, agg: sum, name: faturamento, format: currency, label: Faturamento}
+    y: [qtd, faturamento]       # eixo X = primeira medida, eixo Y = segunda
+    width: 6
+
+  - id: area
+    title: Faturamento acumulado por produto
+    viz: area
+    source: {table: vendas}
+    dimensions: [mes, produto]
+    measures: [{column: valor, agg: sum, name: faturamento, format: currency, label: Faturamento}]
+    x: mes
+    series: produto
+    y: [faturamento]
+    width: 6
+
+  - id: pivot
+    title: Tabela dinâmica — região × produto
+    viz: pivot
+    source: {table: vendas}
+    dimensions: [regiao, produto]
+    measures: [{column: valor, agg: sum, name: faturamento, format: currency, label: Faturamento}]
+    rows: [regiao]
+    columns: [produto]
+    y: [faturamento]
+    width: 12
+    height: 300
+
+  - id: detalhe
+    title: Detalhamento
+    viz: table
+    source: {table: vendas}
+    dimensions: [regiao, produto, vendedor]
+    measures:
+      - {column: valor, agg: sum, name: faturamento, format: currency, label: Faturamento}
+      - {column: quantidade, agg: sum, name: qtd, format: integer, label: Unidades}
+      - {column: valor, agg: avg, name: ticket, format: currency, label: Ticket médio}
+    sort: [{by: faturamento, dir: desc}]
+    width: 12
+    height: 420

@@ -1,0 +1,26 @@
+name: Guarda de permissões
+
+# pull_request_target roda o código da branch principal (confiável) — o código do PR nunca é executado.
+on:
+  pull_request_target:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Buscar o PR (somente como dados)
+        run: git fetch origin "refs/pull/${{ github.event.number }}/head:pr-head"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pipx install poetry
+      - run: poetry install --only main
+      - name: Conferir permissões do autor
+        run: poetry run uai guard --base HEAD --head pr-head --actor "${{ github.event.pull_request.user.login }}"

@@ -1,0 +1,63 @@
+name: Publicar painéis
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 9 * * 1-5"          # dias úteis, 09:00 UTC — ajuste à frequência dos seus dados
+  workflow_dispatch:
+  repository_dispatch:
+    types: [data-updated]           # o servidor de dados pode disparar este evento (veja o README)
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write      # para gravar access.lock.json
+      pages: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pipx install poetry
+      - run: poetry install --only main
+      - name: Gerar o site
+        run: poetry run uai build
+        env:
+          UAI_MASTER_KEY: ${{ secrets.UAI_MASTER_KEY }}
+          UAI_DB_DEMO: ${{ secrets.UAI_DB_DEMO }}
+          # UAI_DB_PRODUCAO: ${{ secrets.UAI_DB_PRODUCAO }}    # um por banco declarado em uai.yml
+      - name: Registrar mudanças de acesso (access.lock.json)
+        run: |
+          if [ -n "$(git status --porcelain access.lock.json)" ]; then
+            git config user.name "uai-data[bot]"
+            git config user.email "uai-data@users.noreply.github.com"
+            git add access.lock.json
+            git commit -m "chore: atualiza access.lock.json [skip ci]"
+            git push || echo "::warning::Não consegui gravar access.lock.json (proteção da branch?). Rode 'uai lock' localmente e envie o arquivo."
+          fi
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

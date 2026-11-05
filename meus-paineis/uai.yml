@@ -1,0 +1,20 @@
+# Configuração do site Uai Data
+name: Uai Data
+tagline: Explore. Analise. Descubra.
+repo: dono/repositorio            # dono/repositório no GitHub — habilita os botões "Editar" e "Novo painel"
+branch: main
+locale: pt-BR
+currency: BRL
+csv_sep: ";"              # CSV pensado para abrir direto no Excel brasileiro
+csv_decimal: ","
+site_salt: 603ea15c7bba57cd       # não é segredo; evita que os nomes dos arquivos de login sejam adivinhados
+site_admins: [admin]  # quem pode criar organizações e alterar a configuração do site
+
+# Bancos de dados. A URL de conexão NUNCA vai neste arquivo: ela vem de uma variável de ambiente
+# (no GitHub: Settings → Secrets and variables → Actions).
+databases:
+  demo:
+    dsn_env: UAI_DB_DEMO      # demo: sqlite:///demo/vendas.db   |   real: postgresql://usuario:senha@host:5432/banco
+    statement_timeout_s: 120
+
+catalog_schemas: [public]     # schemas listados na página "Explorar dados"

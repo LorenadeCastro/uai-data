@@ -1,0 +1,26 @@
+{
+  "catalog:demo": {
+    "epoch": 0,
+    "users": [
+      "admin",
+      "ana"
+    ]
+  },
+  "dash:demo/vendas": {
+    "epoch": 0,
+    "users": [
+      "admin",
+      "ana",
+      "bia",
+      "caio"
+    ]
+  },
+  "dashx:demo/vendas": {
+    "epoch": 0,
+    "users": [
+      "admin",
+      "ana",
+      "caio"
+    ]
+  }
+}

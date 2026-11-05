@@ -1,0 +1,18 @@
+# Organização: o administrador decide o que cada pessoa pode fazer.
+name: Organização Demo
+admins: [admin]            # administradores têm todas as permissões e gerenciam as pessoas
+databases: [demo]              # bancos que os painéis desta organização podem consultar
+allow_sql: false               # true libera cards com 'sql:' (consulta nativa). Use com banco de acesso restrito.
+
+# Perfis = conjuntos de permissões. Crie os que quiser.
+#   view = ver · download = baixar (xlsx/pdf/csv/png) · share = gerar link · create = criar painel · edit = editar painel
+profiles:
+  viewer:  [view]
+  analyst: [view, download, share]
+  editor:  [view, download, share, create, edit]
+
+# Quem usa qual perfil (os logins precisam existir em access/users.yml)
+members:
+  ana: editor
+  caio: analyst
+  bia: viewer

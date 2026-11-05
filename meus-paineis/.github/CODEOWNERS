@@ -1,0 +1,4 @@
+# Complementa o guard: exige revisão de um administrador nos arquivos de acesso.
+/access/ @SEU-USUARIO-GITHUB
+/uai.yml @SEU-USUARIO-GITHUB
+/.github/ @SEU-USUARIO-GITHUB
