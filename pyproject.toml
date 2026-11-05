@@ -1,0 +1,47 @@
+[project]
+name = "uai-data"
+version = "0.1.0"
+description = "Uai Data — painéis de dados open source, 100% Python, sem servidor (GitHub Actions + Pages)."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Lorena de Castro" }]
+requires-python = ">=3.10,<4.0"
+keywords = ["dashboards", "bi", "postgresql", "github-pages", "open-source"]
+dependencies = [
+    "cryptography>=43",
+    "sqlalchemy>=2.0",
+    "psycopg[binary]>=3.2",
+    "pydantic>=2.7",
+    "pyyaml>=6.0",
+    "typer>=0.12",
+    "openpyxl>=3.1",
+    "reportlab>=4.2",
+    "plotly>=5.20",   # usado apenas para distribuir o plotly.min.js junto com o site
+    "pillow>=10",     # logo no PDF
+]
+
+[project.scripts]
+uai = "uai_data.cli:app"
+
+[tool.poetry]
+packages = [{ include = "uai_data", from = "src" }]
+include = [{ path = "src/uai_data/web/**/*", format = ["sdist", "wheel"] }]
+
+[tool.poetry.group.dev.dependencies]
+pytest = ">=8"
+ruff = ">=0.6"
+
+[build-system]
+requires = ["poetry-core>=2.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+ignore = ["E501", "E731", "B008", "UP031", "PLW1510"]
